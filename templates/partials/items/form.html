@@ -1,0 +1,85 @@
+<!-- Item Form Partial (Create/Edit) -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {{ '아이템 수정' if item else '새 아이템' }}
+        </h3>
+        <button @click="$dispatch('closeModal')"
+                class="p-1 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Form -->
+    <form id="item-form"
+          {% if item %}
+          hx-put="/partials/items/{{ item.id }}"
+          hx-target="#item-{{ item.id }}"
+          {% else %}
+          hx-post="/partials/items"
+          hx-target="#items-list"
+          hx-swap="afterbegin"
+          {% endif %}
+          hx-on::after-request="if(event.detail.successful) $dispatch('closeModal')"
+          class="p-4 space-y-4">
+
+        <!-- Title -->
+        <div>
+            <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                제목 <span class="text-red-500">*</span>
+            </label>
+            <input type="text"
+                   id="title"
+                   name="title"
+                   required
+                   maxlength="200"
+                   value="{{ item.title if item else '' }}"
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                   placeholder="아이템 제목">
+        </div>
+
+        <!-- Description -->
+        <div>
+            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                설명
+            </label>
+            <textarea id="description"
+                      name="description"
+                      rows="3"
+                      class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                      placeholder="아이템 설명 (선택사항)">{{ item.description if item and item.description else '' }}</textarea>
+        </div>
+
+        <!-- Priority -->
+        <div>
+            <label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                우선순위
+            </label>
+            <select id="priority"
+                    name="priority"
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                {% for i in range(11) %}
+                <option value="{{ i }}" {{ 'selected' if item and item.priority == i else ('selected' if not item and i == 0 else '') }}>
+                    {{ i }}{{ ' (낮음)' if i == 0 else (' (높음)' if i == 10 else '') }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <button type="button"
+                    @click="$dispatch('closeModal')"
+                    class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                취소
+            </button>
+            <button type="submit"
+                    class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
+                {{ '수정' if item else '생성' }}
+            </button>
+        </div>
+    </form>
+</div>

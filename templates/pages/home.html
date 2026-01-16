@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-20 text-center">
+    <h1 class="text-5xl font-bold text-gray-900 dark:text-white mb-6">
+        FastAPI + HTMX
+        <span class="text-primary-600 dark:text-primary-400">보일러플레이트</span>
+    </h1>
+    <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
+        JavaScript 프레임워크 없이 동적인 SPA-like 경험을 제공하는
+        모던 풀스택 웹 애플리케이션 보일러플레이트입니다.
+    </p>
+    <div class="flex justify-center gap-4">
+        {% if current_user %}
+        <a href="/dashboard"
+           class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors">
+            대시보드로 이동
+        </a>
+        {% else %}
+        <a href="/register"
+           class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors">
+            시작하기
+        </a>
+        <a href="/login"
+           class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-colors">
+            로그인
+        </a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-16">
+    <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
+        주요 기능
+    </h2>
+    <div class="grid md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">빠른 성능</h3>
+            <p class="text-gray-600 dark:text-gray-400">
+                FastAPI의 비동기 처리와 HTMX의 부분 HTML 업데이트로 빠른 응답 속도를 제공합니다.
+            </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">안전한 인증</h3>
+            <p class="text-gray-600 dark:text-gray-400">
+                JWT 기반 인증 시스템과 httpOnly 쿠키를 통한 안전한 세션 관리를 제공합니다.
+            </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">모듈화 구조</h3>
+            <p class="text-gray-600 dark:text-gray-400">
+                확장과 유지보수가 쉬운 깔끔한 프로젝트 구조를 제공합니다.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Tech Stack Section -->
+<section class="py-16">
+    <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
+        기술 스택
+    </h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl text-center border border-gray-200 dark:border-gray-700">
+            <div class="text-2xl font-bold text-teal-600 mb-2">FastAPI</div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">비동기 웹 프레임워크</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl text-center border border-gray-200 dark:border-gray-700">
+            <div class="text-2xl font-bold text-red-600 mb-2">Jinja2</div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">템플릿 엔진</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl text-center border border-gray-200 dark:border-gray-700">
+            <div class="text-2xl font-bold text-blue-600 mb-2">HTMX</div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">동적 UI</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl text-center border border-gray-200 dark:border-gray-700">
+            <div class="text-2xl font-bold text-cyan-600 mb-2">TailwindCSS</div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">스타일링</p>
+        </div>
+    </div>
+</section>
+
+<!-- HTMX Demo Section -->
+<section class="py-16">
+    <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-4">
+        HTMX 데모
+    </h2>
+    <p class="text-center text-gray-600 dark:text-gray-400 mb-8">
+        JavaScript 없이 동적 상호작용을 경험해보세요
+    </p>
+    <div class="max-w-md mx-auto">
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <button hx-get="/partials/toasts/success?message=HTMX가%20정상적으로%20작동합니다!"
+                    hx-target="#toast-container"
+                    hx-swap="beforeend"
+                    class="w-full px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
+                클릭하여 토스트 표시
+            </button>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-4 text-center">
+                버튼을 클릭하면 HTMX가 서버에서 HTML을 가져와 페이지에 삽입합니다.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

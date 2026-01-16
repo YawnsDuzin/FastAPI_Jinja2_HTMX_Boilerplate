@@ -1,0 +1,75 @@
+<!-- Single Item Partial -->
+<div id="item-{{ item.id }}"
+     class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow">
+    <div class="flex items-start justify-between gap-4">
+        <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-2">
+                <h3 class="font-semibold text-gray-900 dark:text-white truncate">
+                    {{ item.title }}
+                </h3>
+                {% if item.is_active %}
+                <span class="px-2 py-0.5 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">
+                    활성
+                </span>
+                {% else %}
+                <span class="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-full">
+                    비활성
+                </span>
+                {% endif %}
+                {% if item.priority > 0 %}
+                <span class="px-2 py-0.5 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">
+                    우선순위 {{ item.priority }}
+                </span>
+                {% endif %}
+            </div>
+            {% if item.description %}
+            <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
+                {{ item.description }}
+            </p>
+            {% endif %}
+            <p class="text-gray-500 dark:text-gray-500 text-xs mt-2">
+                생성: {{ item.created_at | datetime }}
+            </p>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+            <!-- Toggle Active -->
+            <button hx-post="/partials/items/{{ item.id }}/toggle"
+                    hx-target="#item-{{ item.id }}"
+                    hx-swap="outerHTML"
+                    class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    title="{{ '비활성화' if item.is_active else '활성화' }}">
+                {% if item.is_active %}
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {% else %}
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {% endif %}
+            </button>
+            <!-- Edit -->
+            <button hx-get="/partials/items/{{ item.id }}/edit"
+                    hx-target="#modal-content"
+                    hx-swap="innerHTML"
+                    @click="$dispatch('openModal')"
+                    class="p-2 text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    title="수정">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+            </button>
+            <!-- Delete -->
+            <button hx-delete="/partials/items/{{ item.id }}"
+                    hx-target="#item-{{ item.id }}"
+                    hx-swap="outerHTML"
+                    hx-confirm="정말 이 아이템을 삭제하시겠습니까?"
+                    class="p-2 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    title="삭제">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-[60vh] flex items-center justify-center">
+    <div class="text-center">
+        <h1 class="text-9xl font-bold text-gray-200 dark:text-gray-700">500</h1>
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mt-4 mb-2">
+            서버 오류가 발생했습니다
+        </h2>
+        <p class="text-gray-600 dark:text-gray-400 mb-8">
+            죄송합니다. 서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
+        </p>
+        {% if error_detail and debug %}
+        <div class="max-w-2xl mx-auto mb-8 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg text-left overflow-auto">
+            <pre class="text-xs text-red-600 dark:text-red-400 whitespace-pre-wrap">{{ error_detail }}</pre>
+        </div>
+        {% endif %}
+        <a href="/"
+           class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            홈으로 돌아가기
+        </a>
+    </div>
+</div>
+{% endblock %}
