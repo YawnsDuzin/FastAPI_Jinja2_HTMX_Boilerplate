@@ -1,0 +1,10 @@
+<!-- Items List Partial -->
+<div id="item-list" class="space-y-4">
+    {% if items %}
+        {% for item in items %}
+            {% include "partials/items/item.html" %}
+        {% endfor %}
+    {% else %}
+        {% include "partials/items/empty.html" %}
+    {% endif %}
+</div>

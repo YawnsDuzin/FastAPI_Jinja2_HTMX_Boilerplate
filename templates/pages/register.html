@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center py-8">
+    <div class="w-full max-w-md">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    회원가입
+                </h1>
+                <p class="text-gray-600 dark:text-gray-400">
+                    새 계정을 만드세요
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <form hx-post="/api/v1/auth/register"
+                  hx-target="#register-message"
+                  hx-swap="innerHTML"
+                  hx-on::after-request="if(event.detail.successful && event.detail.xhr.status === 200) { document.getElementById('register-message').innerHTML = '<div class=\'p-4 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg\'>회원가입이 완료되었습니다. 로그인 페이지로 이동합니다...</div>'; setTimeout(() => window.location.href='/login', 2000); }"
+                  class="space-y-6">
+
+                <!-- Message -->
+                <div id="register-message"></div>
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        이메일 <span class="text-red-500">*</span>
+                    </label>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           required
+                           autocomplete="email"
+                           class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                           placeholder="your@email.com">
+                </div>
+
+                <!-- Username -->
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        사용자명 <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text"
+                           id="username"
+                           name="username"
+                           required
+                           minlength="3"
+                           maxlength="50"
+                           autocomplete="username"
+                           class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                           placeholder="username">
+                    <p class="mt-1 text-xs text-gray-500">3-50자의 영문, 숫자, 언더스코어</p>
+                </div>
+
+                <!-- Full Name -->
+                <div>
+                    <label for="full_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        이름
+                    </label>
+                    <input type="text"
+                           id="full_name"
+                           name="full_name"
+                           maxlength="100"
+                           autocomplete="name"
+                           class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                           placeholder="홍길동">
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        비밀번호 <span class="text-red-500">*</span>
+                    </label>
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           required
+                           minlength="8"
+                           autocomplete="new-password"
+                           class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                           placeholder="********">
+                    <p class="mt-1 text-xs text-gray-500">8자 이상의 비밀번호</p>
+                </div>
+
+                <!-- Terms -->
+                <div class="flex items-start">
+                    <input type="checkbox"
+                           id="terms"
+                           name="terms"
+                           required
+                           class="w-4 h-4 mt-0.5 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                    <label for="terms" class="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                        <a href="#" class="text-primary-600 dark:text-primary-400 hover:underline">이용약관</a> 및
+                        <a href="#" class="text-primary-600 dark:text-primary-400 hover:underline">개인정보처리방침</a>에 동의합니다
+                    </label>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit"
+                        class="w-full px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors">
+                    <span class="htmx-indicator">
+                        <svg class="animate-spin inline-block w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </span>
+                    회원가입
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-200 dark:border-gray-700"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white dark:bg-gray-800 text-gray-500">또는</span>
+                </div>
+            </div>
+
+            <!-- Login Link -->
+            <p class="text-center text-gray-600 dark:text-gray-400">
+                이미 계정이 있으신가요?
+                <a href="/login" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">
+                    로그인
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

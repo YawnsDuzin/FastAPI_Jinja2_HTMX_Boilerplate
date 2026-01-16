@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-8">
+        소개
+    </h1>
+
+    <div class="prose dark:prose-invert max-w-none">
+        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+            이 프로젝트는 FastAPI, Jinja2, HTMX를 결합한 모던 풀스택 웹 애플리케이션 보일러플레이트입니다.
+            JavaScript 프레임워크 없이도 동적인 SPA-like 경험을 구현할 수 있습니다.
+        </p>
+
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mt-12 mb-4">
+            프로젝트 특징
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-6 not-prose mb-12">
+            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">제로 JavaScript 빌드</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                    HTMX와 Alpine.js를 사용하여 별도의 빌드 프로세스 없이 동적 UI를 구현합니다.
+                </p>
+            </div>
+            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">서버사이드 렌더링</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                    SEO 친화적인 서버사이드 렌더링으로 검색 엔진 최적화가 용이합니다.
+                </p>
+            </div>
+            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">빠른 UI 업데이트</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                    Partial HTML 응답으로 필요한 부분만 업데이트하여 빠른 사용자 경험을 제공합니다.
+                </p>
+            </div>
+            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">모듈화 구조</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                    확장과 유지보수가 쉬운 깔끔하게 분리된 프로젝트 구조를 제공합니다.
+                </p>
+            </div>
+        </div>
+
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mt-12 mb-4">
+            기술 스택
+        </h2>
+
+        <div class="overflow-x-auto not-prose mb-12">
+            <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
+                <thead class="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">구분</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">기술</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">용도</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <tr>
+                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">Backend</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">FastAPI</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">비동기 웹 프레임워크</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">Template</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">Jinja2</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">서버사이드 렌더링</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">Frontend</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">HTMX</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">AJAX/동적 UI</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">CSS</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">TailwindCSS</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">스타일링</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">Database</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">SQLAlchemy</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">ORM</td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">Auth</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">python-jose</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">JWT 인증</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mt-12 mb-4">
+            참고 자료
+        </h2>
+
+        <ul class="space-y-2 not-prose">
+            <li>
+                <a href="https://fastapi.tiangolo.com" target="_blank" rel="noopener"
+                   class="text-primary-600 dark:text-primary-400 hover:underline">
+                    FastAPI 공식 문서
+                </a>
+            </li>
+            <li>
+                <a href="https://htmx.org/docs/" target="_blank" rel="noopener"
+                   class="text-primary-600 dark:text-primary-400 hover:underline">
+                    HTMX 공식 문서
+                </a>
+            </li>
+            <li>
+                <a href="https://jinja.palletsprojects.com" target="_blank" rel="noopener"
+                   class="text-primary-600 dark:text-primary-400 hover:underline">
+                    Jinja2 공식 문서
+                </a>
+            </li>
+            <li>
+                <a href="https://alpinejs.dev" target="_blank" rel="noopener"
+                   class="text-primary-600 dark:text-primary-400 hover:underline">
+                    Alpine.js 공식 문서
+                </a>
+            </li>
+            <li>
+                <a href="https://tailwindcss.com/docs" target="_blank" rel="noopener"
+                   class="text-primary-600 dark:text-primary-400 hover:underline">
+                    TailwindCSS 공식 문서
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

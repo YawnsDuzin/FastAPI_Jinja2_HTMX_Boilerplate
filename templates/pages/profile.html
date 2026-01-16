@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">프로필</h1>
+
+    <!-- Profile Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <div class="flex items-center gap-6 mb-6">
+            <div class="w-20 h-20 rounded-full bg-primary-500 flex items-center justify-center text-white text-2xl font-bold">
+                {{ current_user.username[0] | upper }}
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    {{ current_user.full_name or current_user.username }}
+                </h2>
+                <p class="text-gray-500 dark:text-gray-400">@{{ current_user.username }}</p>
+            </div>
+        </div>
+
+        <form hx-patch="/api/v1/users/me"
+              hx-swap="none"
+              hx-on::after-request="if(event.detail.successful) { htmx.trigger('#toast-container', 'showToast', {type: 'success', message: '프로필이 수정되었습니다.'}); }"
+              class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    이메일
+                </label>
+                <input type="email"
+                       name="email"
+                       value="{{ current_user.email }}"
+                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    사용자명
+                </label>
+                <input type="text"
+                       name="username"
+                       value="{{ current_user.username }}"
+                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    이름
+                </label>
+                <input type="text"
+                       name="full_name"
+                       value="{{ current_user.full_name or '' }}"
+                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500">
+            </div>
+            <button type="submit"
+                    class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
+                저장
+            </button>
+        </form>
+    </div>
+
+    <!-- Password Change -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">비밀번호 변경</h3>
+        <form hx-post="/api/v1/users/me/change-password"
+              hx-swap="none"
+              hx-on::after-request="if(event.detail.successful) { this.reset(); htmx.trigger('#toast-container', 'showToast', {type: 'success', message: '비밀번호가 변경되었습니다.'}); }"
+              class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    현재 비밀번호
+                </label>
+                <input type="password"
+                       name="current_password"
+                       required
+                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    새 비밀번호
+                </label>
+                <input type="password"
+                       name="new_password"
+                       required
+                       minlength="8"
+                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500">
+            </div>
+            <button type="submit"
+                    class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
+                비밀번호 변경
+            </button>
+        </form>
+    </div>
+
+    <!-- Account Info -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">계정 정보</h3>
+        <dl class="space-y-3">
+            <div class="flex justify-between">
+                <dt class="text-gray-500 dark:text-gray-400">가입일</dt>
+                <dd class="text-gray-900 dark:text-white">{{ current_user.created_at | datetime }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="text-gray-500 dark:text-gray-400">계정 상태</dt>
+                <dd>
+                    {% if current_user.is_active %}
+                    <span class="px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">활성</span>
+                    {% else %}
+                    <span class="px-2 py-1 text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full">비활성</span>
+                    {% endif %}
+                </dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="text-gray-500 dark:text-gray-400">이메일 인증</dt>
+                <dd>
+                    {% if current_user.is_verified %}
+                    <span class="px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">인증됨</span>
+                    {% else %}
+                    <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">미인증</span>
+                    {% endif %}
+                </dd>
+            </div>
+        </dl>
+    </div>
+</div>
+{% endblock %}

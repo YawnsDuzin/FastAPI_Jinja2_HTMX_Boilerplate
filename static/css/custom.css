@@ -1,0 +1,178 @@
+/**
+ * Custom CSS for FastAPI + Jinja2 + HTMX Boilerplate
+ *
+ * TailwindCSS를 기본으로 사용하고 있어 대부분의 스타일링은
+ * 클래스로 처리됩니다. 이 파일에는 커스텀 스타일만 정의합니다.
+ */
+
+/* HTMX Loading Indicator */
+.htmx-indicator {
+    display: none;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+    display: inline;
+}
+
+/* HTMX Settling & Swapping transitions */
+.htmx-swapping {
+    opacity: 0;
+    transition: opacity 200ms ease-out;
+}
+
+.htmx-settling {
+    opacity: 1;
+    transition: opacity 200ms ease-in;
+}
+
+/* Loading bar animation */
+#loading-indicator {
+    transform: translateX(-100%);
+    transition: none;
+}
+
+.htmx-request #loading-indicator {
+    transform: translateX(0);
+    animation: loading-progress 2s ease-in-out infinite;
+}
+
+@keyframes loading-progress {
+    0% {
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Form focus styles */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+}
+
+/* Button loading state */
+button.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+button.loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Toast animations */
+@keyframes slide-in-right {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-out-right {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Modal backdrop blur */
+.modal-backdrop {
+    backdrop-filter: blur(4px);
+}
+
+/* Skeleton loading */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.dark .skeleton {
+    background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+    background-size: 200% 100%;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}

@@ -1,0 +1,92 @@
+# Docker Compose Configuration
+# FastAPI + Jinja2 + HTMX Boilerplate
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-htmx-app
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - DEBUG=false
+      - DATABASE_URL=sqlite+aiosqlite:///./app.db
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-me-in-production}
+    volumes:
+      - app-data:/app/data
+      - ./static:/app/static:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Development configuration
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-htmx-dev
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=development
+      - DEBUG=true
+      - DATABASE_URL=sqlite+aiosqlite:///./app.db
+      - SECRET_KEY=dev-secret-key
+      - JWT_SECRET_KEY=dev-jwt-secret
+    volumes:
+      - .:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    profiles:
+      - dev
+
+  # PostgreSQL (optional - for production)
+  postgres:
+    image: postgres:16-alpine
+    container_name: fastapi-htmx-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-appuser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-apppassword}
+      - POSTGRES_DB=${POSTGRES_DB:-appdb}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-appuser}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - postgres
+
+  # Redis (optional - for caching/sessions)
+  redis:
+    image: redis:7-alpine
+    container_name: fastapi-htmx-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - redis
+
+volumes:
+  app-data:
+  postgres-data:
+  redis-data:
+
+networks:
+  default:
+    name: fastapi-htmx-network
