@@ -1,0 +1,2 @@
+# FastAPI_Jinja2_HTMX_Boilerplate
+FastAPI_Jinja2_HTMX_Boilerplate 코드생성
