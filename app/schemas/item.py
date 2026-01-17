@@ -4,10 +4,15 @@ Item Schemas
 아이템 관련 Pydantic 스키마 정의
 """
 
+from __future__ import annotations
+
 from datetime import datetime
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
+
+if TYPE_CHECKING:
+    from app.schemas.user import User
 
 
 class ItemBase(BaseModel):
@@ -47,7 +52,5 @@ class Item(ItemBase):
 
 class ItemWithOwner(Item):
     """소유자 정보 포함 아이템 스키마"""
-
-    from app.schemas.user import User
 
     owner: User

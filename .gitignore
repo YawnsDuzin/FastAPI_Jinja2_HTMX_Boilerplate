@@ -170,3 +170,4 @@ test.db
 
 # Local configuration
 local_config.py
+prompts.md

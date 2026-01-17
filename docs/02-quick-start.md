@@ -85,16 +85,16 @@ alembic upgrade head
 
 ```bash
 # 개발 서버 실행 (자동 리로드)
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 
 # 또는 간단히
 python -m uvicorn app.main:app --reload
 ```
 
 서버가 실행되면:
-- 애플리케이션: http://localhost:8000
-- API 문서: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+- 애플리케이션: http://localhost:8001
+- API 문서: http://localhost:8001/docs
+- ReDoc: http://localhost:8001/redoc
 
 ## 5. Docker 실행
 
@@ -126,7 +126,7 @@ docker-compose --profile postgres up -d
 
 ### 6.1 웹 인터페이스
 
-1. http://localhost:8000/register 접속
+1. http://localhost:8001/register 접속
 2. 이메일, 사용자명, 비밀번호 입력
 3. 회원가입 완료 후 로그인
 
@@ -134,12 +134,12 @@ docker-compose --profile postgres up -d
 
 ```bash
 # 회원가입
-curl -X POST http://localhost:8000/api/v1/auth/register \
+curl -X POST http://localhost:8001/api/v1/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email": "user@example.com", "username": "testuser", "password": "password123"}'
 
 # 로그인
-curl -X POST http://localhost:8000/api/v1/auth/login \
+curl -X POST http://localhost:8001/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email": "user@example.com", "password": "password123"}'
 ```
@@ -210,8 +210,8 @@ mypy app
 
 ### 포트 충돌
 ```bash
-# 8000 포트 사용 중인 프로세스 확인
-lsof -i :8000
+# 8001 포트 사용 중인 프로세스 확인
+lsof -i :8001
 
 # 다른 포트로 실행
 uvicorn app.main:app --reload --port 8001

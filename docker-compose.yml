@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
     container_name: fastapi-htmx-app
     ports:
-      - "8000:8000"
+      - "8001:8001"
     environment:
       - APP_ENV=production
       - DEBUG=false
@@ -20,7 +20,7 @@ services:
       - ./static:/app/static:ro
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -33,7 +33,7 @@ services:
       dockerfile: Dockerfile
     container_name: fastapi-htmx-dev
     ports:
-      - "8000:8000"
+      - "8001:8001"
     environment:
       - APP_ENV=development
       - DEBUG=true
@@ -42,7 +42,7 @@ services:
       - JWT_SECRET_KEY=dev-jwt-secret
     volumes:
       - .:/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
     profiles:
       - dev
 

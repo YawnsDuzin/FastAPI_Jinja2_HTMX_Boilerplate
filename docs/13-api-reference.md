@@ -393,6 +393,6 @@
 
 개발 모드에서 자동 생성되는 API 문서:
 
-- **Swagger UI**: `http://localhost:8000/docs`
-- **ReDoc**: `http://localhost:8000/redoc`
-- **OpenAPI JSON**: `http://localhost:8000/openapi.json`
+- **Swagger UI**: `http://localhost:8001/docs`
+- **ReDoc**: `http://localhost:8001/redoc`
+- **OpenAPI JSON**: `http://localhost:8001/openapi.json`

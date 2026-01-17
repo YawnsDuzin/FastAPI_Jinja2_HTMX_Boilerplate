@@ -77,7 +77,7 @@ alembic revision --autogenerate -m "Description"
 
 ```bash
 # 개발 모드 (자동 리로드)
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 
 # 또는
 python -m uvicorn app.main:app --reload
@@ -305,7 +305,7 @@ find . -type f -name "*.pyc" -delete
 rm app.db && alembic upgrade head
 
 # 포트 확인
-lsof -i :8000
+lsof -i :8001
 ```
 
 ## 10. 문제 해결
@@ -319,7 +319,7 @@ export PYTHONPATH="${PYTHONPATH}:${PWD}"
 ### 포트 충돌
 ```bash
 # 프로세스 종료
-kill $(lsof -t -i:8000)
+kill $(lsof -t -i:8001)
 ```
 
 ### 마이그레이션 오류
