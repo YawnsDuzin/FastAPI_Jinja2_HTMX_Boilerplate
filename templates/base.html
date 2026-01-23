@@ -1,4 +1,31 @@
 <!DOCTYPE html>
+<!--
+=============================================================================
+base.html - 기본 레이아웃 템플릿
+=============================================================================
+이 파일은 모든 페이지의 기본 구조를 정의합니다.
+다른 페이지 템플릿은 이 파일을 상속받아 사용합니다.
+
+Jinja2 템플릿 상속:
+    {% extends "base.html" %}     - 이 템플릿을 상속
+    {% block content %}...{% endblock %} - 블록 내용 재정의
+
+사용된 기술:
+    - TailwindCSS: 유틸리티 기반 CSS 프레임워크 (CDN)
+    - HTMX: JavaScript 없이 AJAX 요청을 HTML 속성으로 처리
+    - Alpine.js: 가벼운 반응형 JavaScript 프레임워크
+=============================================================================
+-->
+
+<!--
+x-data: Alpine.js 컴포넌트 선언
+    - 이 요소와 하위 요소에서 사용할 데이터/상태를 정의
+    - darkMode: localStorage에서 다크모드 설정을 불러옴
+
+:class: Alpine.js 동적 클래스 바인딩
+    - darkMode가 true면 'dark' 클래스 추가
+    - TailwindCSS의 dark: 접두사와 함께 사용하여 다크모드 구현
+-->
 <html lang="ko" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }"
       :class="{ 'dark': darkMode }">
 <head>
@@ -6,15 +33,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ app_name }} - FastAPI + Jinja2 + HTMX 보일러플레이트">
 
+    <!--
+    Jinja2 템플릿 변수와 필터:
+        {{ variable }}     - 변수 출력
+        {{ var | filter }} - 필터 적용
+        default(값)        - 변수가 없으면 기본값 사용
+
+    {% block name %}...{% endblock %}:
+        - 자식 템플릿에서 재정의할 수 있는 영역
+        - 재정의하지 않으면 기본 내용 사용
+    -->
     <title>{% block title %}{{ title | default(app_name) }}{% endblock %} | {{ app_name }}</title>
 
-    <!-- TailwindCSS CDN -->
+    <!--
+    ==========================================================================
+    TailwindCSS CDN
+    ==========================================================================
+    TailwindCSS는 유틸리티 클래스 기반 CSS 프레임워크입니다.
+
+    예시:
+        <div class="bg-blue-500 text-white p-4 rounded-lg">
+            배경: 파란색, 글자: 흰색, 패딩: 1rem, 모서리: 둥글게
+
+    장점:
+        - HTML에서 바로 스타일링 가능
+        - 일관된 디자인 시스템
+        - 반응형 디자인 쉽게 구현 (sm:, md:, lg: 접두사)
+        - 다크모드 지원 (dark: 접두사)
+
+    CDN 사용 시 주의:
+        - 개발용으로만 권장 (프로덕션에서는 빌드 필요)
+        - 모든 클래스가 포함되어 용량이 큼
+    ==========================================================================
+    -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // TailwindCSS 설정 커스터마이징
         tailwind.config = {
+            // 다크모드: 'class' 전략 사용
+            // - 'media': 시스템 설정 따름
+            // - 'class': HTML에 'dark' 클래스로 제어
             darkMode: 'class',
             theme: {
                 extend: {
+                    // 커스텀 색상 팔레트 정의
+                    // 사용: bg-primary-500, text-primary-700 등
                     colors: {
                         primary: {
                             50: '#eff6ff',
@@ -34,33 +97,166 @@
         }
     </script>
 
-    <!-- HTMX -->
+    <!--
+    ==========================================================================
+    HTMX - HTML을 통한 동적 웹 페이지
+    ==========================================================================
+    HTMX는 HTML 속성만으로 AJAX 요청을 처리합니다.
+    JavaScript 코드 없이도 동적인 웹 페이지를 만들 수 있습니다.
+
+    핵심 속성:
+        hx-get="/url"      - GET 요청
+        hx-post="/url"     - POST 요청
+        hx-put="/url"      - PUT 요청
+        hx-delete="/url"   - DELETE 요청
+
+        hx-target="#id"    - 응답을 넣을 요소 지정
+        hx-swap="innerHTML"- 응답을 어떻게 넣을지 지정
+            - innerHTML: 내부 HTML 교체 (기본값)
+            - outerHTML: 요소 전체 교체
+            - beforeend: 요소 끝에 추가
+            - afterbegin: 요소 시작에 추가
+            - delete: 요소 삭제
+
+        hx-trigger="click" - 언제 요청할지 (기본: 자연스러운 이벤트)
+            - click, submit, change 등
+            - keyup changed delay:500ms (입력 후 0.5초 대기)
+            - load (페이지 로드 시)
+            - revealed (화면에 보일 때)
+
+        hx-indicator="#id" - 로딩 중 표시할 요소
+
+    예시:
+        <button hx-post="/api/items"
+                hx-target="#item-list"
+                hx-swap="beforeend">
+            아이템 추가
+        </button>
+        → 버튼 클릭 시 POST 요청, 응답을 #item-list 끝에 추가
+    ==========================================================================
+    -->
     <script src="https://unpkg.com/htmx.org@2.0.0"></script>
 
-    <!-- Alpine.js -->
+    <!--
+    ==========================================================================
+    Alpine.js - 가벼운 반응형 JavaScript
+    ==========================================================================
+    Alpine.js는 HTML 속성으로 반응형 동작을 추가합니다.
+    Vue.js와 비슷하지만 훨씬 가볍습니다. (15KB)
+
+    핵심 디렉티브:
+        x-data="{ ... }"   - 컴포넌트 상태 정의
+        x-show="조건"      - 조건부 표시 (display: none)
+        x-if="조건"        - 조건부 렌더링 (DOM에서 제거)
+        x-for="item in items" - 반복 렌더링
+        x-text="변수"      - 텍스트 바인딩
+        x-bind:속성="값"   - 속성 바인딩 (:속성 단축형)
+        x-on:이벤트="코드" - 이벤트 핸들러 (@이벤트 단축형)
+        x-model="변수"     - 양방향 바인딩
+
+        x-transition       - 표시/숨김 시 애니메이션
+        x-init="코드"      - 초기화 시 실행
+
+    예시:
+        <div x-data="{ count: 0 }">
+            <button @click="count++">+1</button>
+            <span x-text="count"></span>
+        </div>
+        → 버튼 클릭할 때마다 숫자 증가
+
+    defer 속성:
+        - HTML 파싱이 완료된 후 스크립트 실행
+        - Alpine.js는 defer 필수
+    ==========================================================================
+    -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Custom CSS -->
+    <!-- 커스텀 CSS: HTMX 로딩 인디케이터, 애니메이션 등 -->
     <link rel="stylesheet" href="/static/css/custom.css">
 
+    <!-- 페이지별 추가 head 요소를 위한 블록 -->
     {% block extra_head %}{% endblock %}
 </head>
+
+<!--
+body 속성 설명:
+
+class="bg-gray-50 dark:bg-gray-900 ...":
+    - TailwindCSS 클래스
+    - bg-gray-50: 밝은 회색 배경
+    - dark:bg-gray-900: 다크모드일 때 어두운 배경
+    - min-h-screen: 최소 높이를 화면 전체로
+
+hx-boost="true":
+    - HTMX의 boost 기능
+    - 일반 링크 클릭을 AJAX로 변환
+    - 페이지 전체 새로고침 없이 콘텐츠만 교체
+    - SPA(Single Page Application)처럼 동작
+-->
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen"
       hx-boost="true">
 
-    <!-- Toast Container -->
+    <!--
+    ==========================================================================
+    Toast Container (토스트 알림 컨테이너)
+    ==========================================================================
+    토스트는 사용자에게 피드백을 제공하는 작은 알림 메시지입니다.
+    화면 우상단에 표시되며 자동으로 사라집니다.
+
+    x-data="toastHandler()":
+        - static/js/app.js에 정의된 토스트 핸들러 함수 호출
+        - 토스트 배열과 show/hide 메서드 포함
+
+    @showToast.window="show($event.detail)":
+        - 커스텀 이벤트 리스너
+        - window에서 'showToast' 이벤트 발생 시 show() 호출
+        - $event.detail: 이벤트와 함께 전달된 데이터
+
+    토스트 표시 방법:
+        JavaScript: window.dispatchEvent(new CustomEvent('showToast', {
+            detail: { type: 'success', message: '저장되었습니다!' }
+        }))
+
+        HTMX: 서버 응답 헤더로 트리거
+            HX-Trigger: {"showToast": {"type": "success", "message": "저장!"}}
+    ==========================================================================
+    -->
     <div id="toast-container"
          class="fixed top-4 right-4 z-50 flex flex-col gap-2"
          x-data="toastHandler()"
          @showToast.window="show($event.detail)">
     </div>
 
-    <!-- Modal Container -->
+    <!--
+    ==========================================================================
+    Modal Container (모달 컨테이너)
+    ==========================================================================
+    모달은 현재 페이지 위에 떠있는 대화상자입니다.
+    사용자의 주의를 끌거나 확인이 필요할 때 사용합니다.
+
+    x-data="{ open: false }":
+        - 모달 상태 관리 (열림/닫힘)
+
+    @openModal.window / @closeModal.window:
+        - 커스텀 이벤트로 모달 제어
+        - HTMX 응답에서 HX-Trigger 헤더로 트리거 가능
+
+    @keydown.escape.window="open = false":
+        - ESC 키 누르면 모달 닫기
+        - .window: window 레벨에서 이벤트 감지
+
+    x-transition:
+        - Alpine.js 트랜지션 디렉티브
+        - enter/leave 시 CSS 클래스 적용
+        - opacity, scale 등 애니메이션 효과
+    ==========================================================================
+    -->
     <div id="modal-container"
          x-data="{ open: false }"
          @openModal.window="open = true"
          @closeModal.window="open = false"
          @keydown.escape.window="open = false">
+        <!-- 모달 배경 오버레이 (클릭하면 모달 닫힘) -->
         <div x-show="open"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0"
@@ -71,6 +267,11 @@
              class="fixed inset-0 bg-black/50 z-40"
              @click="open = false">
         </div>
+        <!--
+        모달 내용 컨테이너
+        - HTMX 응답으로 이 영역 내용을 교체
+        - hx-target="#modal-content" hx-swap="innerHTML"
+        -->
         <div id="modal-content"
              x-show="open"
              x-transition:enter="transition ease-out duration-200"
@@ -81,29 +282,107 @@
              x-transition:leave-end="opacity-0 scale-95"
              class="fixed inset-0 z-50 flex items-center justify-center p-4"
              @click.self="open = false">
+            <!-- 모달 내용이 HTMX로 여기에 로드됨 -->
         </div>
     </div>
 
-    <!-- Navigation -->
+    <!--
+    ==========================================================================
+    Navigation (네비게이션 바)
+    ==========================================================================
+    {% include "파일" %}:
+        - 다른 템플릿 파일을 이 위치에 삽입
+        - 현재 컨텍스트(변수)가 그대로 전달됨
+        - 재사용 가능한 컴포넌트 분리에 유용
+    ==========================================================================
+    -->
     {% include "components/navbar.html" %}
 
-    <!-- Main Content -->
+    <!--
+    ==========================================================================
+    Main Content (메인 콘텐츠 영역)
+    ==========================================================================
+    {% block main_class %}...{% endblock %}:
+        - 기본 클래스를 블록으로 정의
+        - 자식 템플릿에서 재정의 가능
+        - 예: 대시보드는 사이드바가 있어서 다른 레이아웃 필요
+
+    {% block content %}{% endblock %}:
+        - 각 페이지의 실제 내용이 들어갈 위치
+        - 자식 템플릿에서 반드시 정의해야 함
+    ==========================================================================
+    -->
     <main class="{% block main_class %}container mx-auto px-4 py-8{% endblock %}">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
+    <!-- Footer (푸터) -->
     {% include "components/footer.html" %}
 
-    <!-- Loading Indicator -->
+    <!--
+    ==========================================================================
+    Loading Indicator (전역 로딩 인디케이터)
+    ==========================================================================
+    HTMX 요청 중에 표시되는 로딩 바입니다.
+    화면 상단에 파란색 프로그레스 바로 표시됩니다.
+
+    htmx-indicator 클래스:
+        - HTMX가 자동으로 관리
+        - 기본적으로 숨겨져 있음 (opacity: 0)
+        - 요청 중에 .htmx-request 클래스가 추가되어 표시됨
+
+    CSS (custom.css):
+        .htmx-indicator { opacity: 0; transition: opacity 200ms; }
+        .htmx-request .htmx-indicator { opacity: 1; }
+        .htmx-request.htmx-indicator { opacity: 1; }
+
+    특정 요소에 로딩 인디케이터 연결:
+        <button hx-get="/api/data"
+                hx-indicator="#my-spinner">
+            로드
+        </button>
+        <span id="my-spinner" class="htmx-indicator">로딩중...</span>
+    ==========================================================================
+    -->
     <div id="loading-indicator"
          class="htmx-indicator fixed top-0 left-0 right-0 h-1 bg-primary-500 z-50">
         <div class="h-full bg-primary-300 animate-pulse"></div>
     </div>
 
-    <!-- Custom JS -->
+    <!--
+    ==========================================================================
+    스피너 로딩 인디케이터 (화면 중앙)
+    ==========================================================================
+    HTMX 요청 중에 화면 중앙에 표시되는 스피너입니다.
+    더 명확한 로딩 피드백을 제공합니다.
+
+    사용 방법:
+        요소에 hx-indicator="#global-spinner" 추가
+        또는 body에 hx-indicator 설정으로 전역 적용
+
+    CSS 클래스 설명:
+        - fixed inset-0: 화면 전체 고정
+        - flex items-center justify-center: 중앙 정렬
+        - bg-black/20: 반투명 검정 배경 (20% 불투명도)
+        - pointer-events-none: 마우스 이벤트 무시 (아래 요소 클릭 가능)
+    ==========================================================================
+    -->
+    <div id="global-spinner"
+         class="htmx-indicator fixed inset-0 flex items-center justify-center bg-black/20 z-50 pointer-events-none">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-xl flex items-center gap-3">
+            <!-- SVG 스피너 애니메이션 -->
+            <svg class="animate-spin h-6 w-6 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-gray-700 dark:text-gray-300 font-medium">로딩 중...</span>
+        </div>
+    </div>
+
+    <!-- 커스텀 JavaScript: 토스트 핸들러, HTMX 이벤트 등 -->
     <script src="/static/js/app.js"></script>
 
+    <!-- 페이지별 추가 스크립트를 위한 블록 -->
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>
