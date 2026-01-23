@@ -1,55 +1,159 @@
 /**
  * Custom CSS for FastAPI + Jinja2 + HTMX Boilerplate
+ * FastAPI + Jinja2 + HTMX 보일러플레이트 커스텀 CSS
  *
  * TailwindCSS를 기본으로 사용하고 있어 대부분의 스타일링은
- * 클래스로 처리됩니다. 이 파일에는 커스텀 스타일만 정의합니다.
+ * 유틸리티 클래스로 처리됩니다. 이 파일에는 다음 항목만 정의합니다:
+ *
+ * 1. HTMX 로딩 인디케이터
+ * 2. HTMX 전환 애니메이션
+ * 3. 커스텀 스크롤바
+ * 4. 토스트 애니메이션
+ * 5. 스켈레톤 로딩
+ * 6. 기타 유틸리티
  */
 
-/* HTMX Loading Indicator */
+/* =============================================================================
+ * 1. HTMX 로딩 인디케이터 (Loading Indicators)
+ * =============================================================================
+ *
+ * HTMX는 요청 중에 htmx-request 클래스를 추가합니다.
+ * 이를 활용하여 로딩 상태를 표시합니다.
+ *
+ * 사용법:
+ *   <button hx-get="/data" hx-indicator="#my-spinner">로드</button>
+ *   <span id="my-spinner" class="htmx-indicator">로딩중...</span>
+ */
+
+/* 기본 인디케이터: 숨김 상태 */
 .htmx-indicator {
-    display: none;
+    opacity: 0;
+    transition: opacity 200ms ease-in-out;
+    pointer-events: none;
 }
 
+/* 요청 중: 인디케이터 표시 */
 .htmx-request .htmx-indicator,
 .htmx-request.htmx-indicator {
-    display: inline;
-}
-
-/* HTMX Settling & Swapping transitions */
-.htmx-swapping {
-    opacity: 0;
-    transition: opacity 200ms ease-out;
-}
-
-.htmx-settling {
     opacity: 1;
-    transition: opacity 200ms ease-in;
 }
 
-/* Loading bar animation */
+/* 전역 로딩 바 (화면 상단) */
 #loading-indicator {
-    transform: translateX(-100%);
+    transform: scaleX(0);
+    transform-origin: left;
     transition: none;
 }
 
-.htmx-request #loading-indicator {
-    transform: translateX(0);
-    animation: loading-progress 2s ease-in-out infinite;
+.htmx-request #loading-indicator,
+body.htmx-request #loading-indicator {
+    transform: scaleX(1);
+    animation: loading-bar 2s ease-in-out infinite;
 }
 
-@keyframes loading-progress {
+@keyframes loading-bar {
     0% {
-        transform: translateX(-100%);
+        transform: scaleX(0);
+        transform-origin: left;
     }
     50% {
-        transform: translateX(0);
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+    50.01% {
+        transform: scaleX(1);
+        transform-origin: right;
     }
     100% {
-        transform: translateX(100%);
+        transform: scaleX(0);
+        transform-origin: right;
     }
 }
 
-/* Custom scrollbar */
+/* 전역 스피너 (화면 중앙) */
+#global-spinner {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 200ms ease-in-out, visibility 200ms;
+}
+
+.htmx-request #global-spinner,
+body.htmx-request #global-spinner {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 버튼 내부 로딩 스피너 */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    top: 50%;
+    left: 50%;
+    margin-left: -0.5rem;
+    margin-top: -0.5rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =============================================================================
+ * 2. HTMX 전환 애니메이션 (Transitions)
+ * =============================================================================
+ *
+ * HTMX는 콘텐츠 교체 시 다음 클래스를 사용합니다:
+ * - htmx-swapping: 기존 콘텐츠가 제거되는 동안
+ * - htmx-settling: 새 콘텐츠가 추가되는 동안
+ * - htmx-added: 새로 추가된 요소
+ */
+
+/* 스와핑 중: 페이드 아웃 */
+.htmx-swapping {
+    opacity: 0;
+    transition: opacity 150ms ease-out;
+}
+
+/* 세틀링 중: 페이드 인 */
+.htmx-settling {
+    opacity: 1;
+    transition: opacity 150ms ease-in;
+}
+
+/* 새로 추가된 요소: 슬라이드 인 */
+.htmx-added {
+    animation: fade-slide-in 200ms ease-out;
+}
+
+@keyframes fade-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =============================================================================
+ * 3. 커스텀 스크롤바 (Scrollbar)
+ * =============================================================================
+ */
+
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -68,6 +172,7 @@
     background: #94a3b8;
 }
 
+/* 다크 모드 스크롤바 */
 .dark ::-webkit-scrollbar-thumb {
     background: #475569;
 }
@@ -76,7 +181,159 @@
     background: #64748b;
 }
 
-/* Line clamp utilities */
+/* Firefox 스크롤바 */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.dark * {
+    scrollbar-color: #475569 transparent;
+}
+
+/* =============================================================================
+ * 4. 토스트 애니메이션 (Toast Animations)
+ * =============================================================================
+ *
+ * 토스트 알림의 진입/퇴장 애니메이션입니다.
+ * Alpine.js x-transition과 함께 사용됩니다.
+ */
+
+/* 오른쪽에서 슬라이드 인 */
+@keyframes slide-in-right {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* 오른쪽으로 슬라이드 아웃 */
+@keyframes slide-out-right {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast-enter {
+    animation: slide-in-right 300ms ease-out;
+}
+
+.toast-leave {
+    animation: slide-out-right 200ms ease-in forwards;
+}
+
+/* 토스트 프로그레스 바 */
+.toast-progress {
+    animation: toast-countdown linear forwards;
+}
+
+@keyframes toast-countdown {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+/* =============================================================================
+ * 5. 스켈레톤 로딩 (Skeleton Loading)
+ * =============================================================================
+ *
+ * 콘텐츠가 로드되기 전 표시되는 플레이스홀더입니다.
+ *
+ * 사용법:
+ *   <div class="skeleton h-4 w-full rounded"></div>
+ */
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        #e2e8f0 0%,
+        #f1f5f9 50%,
+        #e2e8f0 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+.dark .skeleton {
+    background: linear-gradient(
+        90deg,
+        #374151 0%,
+        #4b5563 50%,
+        #374151 100%
+    );
+    background-size: 200% 100%;
+}
+
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* =============================================================================
+ * 6. 모달 스타일 (Modal Styles)
+ * =============================================================================
+ */
+
+/* 모달 배경 블러 */
+.modal-backdrop {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* 모달 바디 스크롤 방지 */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* =============================================================================
+ * 7. 폼 스타일 (Form Styles)
+ * =============================================================================
+ */
+
+/* 포커스 시 아웃라인 제거 (TailwindCSS 링으로 대체) */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+}
+
+/* 자동완성 스타일 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: inherit;
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f3f4f6;
+}
+
+/* =============================================================================
+ * 8. 유틸리티 클래스 (Utility Classes)
+ * =============================================================================
+ */
+
+/* 텍스트 줄 제한 */
 .line-clamp-1 {
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -98,81 +355,94 @@
     overflow: hidden;
 }
 
-/* Form focus styles */
-input:focus,
-textarea:focus,
-select:focus {
-    outline: none;
-}
-
-/* Button loading state */
-button.loading {
-    position: relative;
-    pointer-events: none;
-}
-
-button.loading::after {
-    content: '';
+/* 숨김 유틸리티 */
+.visually-hidden {
     position: absolute;
-    inset: 0;
-    background: inherit;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
-/* Toast animations */
-@keyframes slide-in-right {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
+/* 펄스 애니메이션 (로딩용) */
+.pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
         opacity: 1;
     }
-}
-
-@keyframes slide-out-right {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(100%);
-        opacity: 0;
+    50% {
+        opacity: 0.5;
     }
 }
 
-/* Modal backdrop blur */
-.modal-backdrop {
-    backdrop-filter: blur(4px);
+/* 바운스 애니메이션 (주목용) */
+.bounce {
+    animation: bounce 1s infinite;
 }
 
-/* Skeleton loading */
-.skeleton {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: skeleton-loading 1.5s infinite;
-}
-
-.dark .skeleton {
-    background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
-    background-size: 200% 100%;
-}
-
-@keyframes skeleton-loading {
-    0% {
-        background-position: 200% 0;
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(-5%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
     }
-    100% {
-        background-position: -200% 0;
+    50% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
     }
 }
 
-/* Print styles */
+/* =============================================================================
+ * 9. 프린트 스타일 (Print Styles)
+ * =============================================================================
+ */
+
 @media print {
-    .no-print {
+    .no-print,
+    #toast-container,
+    #modal-container,
+    #loading-indicator,
+    #global-spinner {
         display: none !important;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* =============================================================================
+ * 10. 접근성 (Accessibility)
+ * =============================================================================
+ */
+
+/* 포커스 가시성 향상 */
+:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* 모션 감소 설정 존중 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .htmx-swapping,
+    .htmx-settling,
+    .htmx-added {
+        transition: none !important;
+        animation: none !important;
     }
 }
