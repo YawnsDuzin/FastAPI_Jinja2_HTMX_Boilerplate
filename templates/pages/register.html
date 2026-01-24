@@ -15,10 +15,9 @@
             </div>
 
             <!-- Register Form -->
-            <form hx-post="/api/v1/auth/register"
+            <form hx-post="/partials/auth/register"
                   hx-target="#register-message"
                   hx-swap="innerHTML"
-                  hx-on::after-request="if(event.detail.successful && event.detail.xhr.status === 200) { document.getElementById('register-message').innerHTML = '<div class=\'p-4 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg\'>회원가입이 완료되었습니다. 로그인 페이지로 이동합니다...</div>'; setTimeout(() => window.location.href='/login', 2000); }"
                   class="space-y-6">
 
                 <!-- Message -->

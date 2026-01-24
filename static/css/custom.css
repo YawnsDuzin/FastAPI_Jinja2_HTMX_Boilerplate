@@ -14,6 +14,15 @@
  */
 
 /* =============================================================================
+ * Alpine.js x-cloak (초기 깜빡임 방지)
+ * =============================================================================
+ * Alpine.js가 초기화되기 전에 x-show 요소를 숨깁니다.
+ */
+[x-cloak] {
+    display: none !important;
+}
+
+/* =============================================================================
  * 1. HTMX 로딩 인디케이터 (Loading Indicators)
  * =============================================================================
  *
@@ -131,6 +140,18 @@ body.htmx-request #global-spinner {
 .htmx-settling {
     opacity: 1;
     transition: opacity 150ms ease-in;
+}
+
+/* hx-boost 페이지 전환 시 input/button이 정상 작동하도록 보장 */
+.htmx-swapping input,
+.htmx-swapping button,
+.htmx-swapping textarea,
+.htmx-swapping select,
+.htmx-settling input,
+.htmx-settling button,
+.htmx-settling textarea,
+.htmx-settling select {
+    pointer-events: auto !important;
 }
 
 /* 새로 추가된 요소: 슬라이드 인 */

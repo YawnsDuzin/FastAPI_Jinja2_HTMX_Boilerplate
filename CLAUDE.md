@@ -51,18 +51,50 @@ Model (app/models/) - SQLAlchemy ORM
 Database (SQLite/PostgreSQL)
 ```
 
-### 인증 시스템
+### 인증 및 의존성 시스템
 
-- JWT 토큰을 httpOnly 쿠키에 저장
-- `CurrentUser`: 인증 필수 의존성
-- `CurrentUserOptional`: 인증 선택 의존성
-- `app/api/deps.py`에서 의존성 정의
+`app/api/deps.py`에서 정의:
+
+| 의존성 | 용도 |
+|--------|------|
+| `CurrentUser` | 인증 필수 (401 on fail) |
+| `CurrentUserOptional` | 인증 선택 (None on fail) |
+| `CurrentSuperuser` | 관리자 필수 (403 on fail) |
+| `DbSession` | 비동기 DB 세션 |
+| `get_*_service(db)` | 서비스 레이어 인스턴스 |
+
+JWT 토큰은 httpOnly 쿠키(`access_token`)에 저장
 
 ### HTMX 패턴
 
-- 파셜 라우터가 HTML 조각 반환
-- `HX-Trigger` 헤더로 토스트/모달 제어
-- 템플릿: `templates/partials/` 하위 구조
+파셜 라우터가 HTML 조각 반환:
+
+```python
+# 파셜 응답
+return templates.TemplateResponse(
+    request=request,
+    name="partials/items/item.html",
+    context={"item": item},
+)
+
+# Form 데이터 수신
+@router.post("", response_class=HTMLResponse)
+async def create_item(
+    title: str = Form(...),
+    description: Optional[str] = Form(None),
+):
+```
+
+`HX-Trigger` 헤더로 토스트/모달 제어:
+
+```python
+response.headers["HX-Trigger"] = json.dumps({
+    "showToast": {"type": "success", "message": "완료"},
+    "closeModal": True,
+})
+```
+
+커스텀 Jinja2 필터: `datetime`, `date`, `truncate`, `currency`, `nl2br`
 
 ## 새 기능 추가 순서
 
@@ -73,9 +105,21 @@ Database (SQLite/PostgreSQL)
 5. `app/partials/` - HTMX 파셜
 6. `templates/` - Jinja2 템플릿
 
+## 주요 파일
+
+| 파일 | 역할 |
+|------|------|
+| `app/api/deps.py` | 의존성 주입 (CurrentUser, DbSession 등) |
+| `app/core/templates.py` | Jinja2 설정, 커스텀 필터 |
+| `app/core/security.py` | JWT 생성/검증, 비밀번호 해싱 |
+| `app/config.py` | Pydantic Settings 환경 설정 |
+| `templates/base.html` | 기본 레이아웃 (HTMX, Alpine.js 포함) |
+| `static/js/app.js` | 토스트 핸들러, HTMX 이벤트 처리 |
+
 ## 주의사항
 
 - 기본 포트는 **8001** (8000 아님)
 - 비동기 DB: `aiosqlite` 사용
 - 순환 import 방지: `TYPE_CHECKING` 블록 사용
 - 테스트는 별도 DB(`test.db`) 사용
+- 테스트 픽스처: `client`, `auth_client`, `test_user`, `db_session` (`conftest.py`)

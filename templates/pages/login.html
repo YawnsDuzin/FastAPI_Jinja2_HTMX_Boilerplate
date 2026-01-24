@@ -15,10 +15,9 @@
             </div>
 
             <!-- Login Form -->
-            <form hx-post="/api/v1/auth/login"
+            <form hx-post="/partials/auth/login"
                   hx-target="#login-error"
                   hx-swap="innerHTML"
-                  hx-on::after-request="if(event.detail.successful && event.detail.xhr.status === 200) window.location.href='/dashboard'"
                   class="space-y-6">
 
                 <!-- Error Message -->

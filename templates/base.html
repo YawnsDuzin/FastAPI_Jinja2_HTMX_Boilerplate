@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--
+{#
 =============================================================================
 base.html - 기본 레이아웃 템플릿
 =============================================================================
@@ -15,7 +15,7 @@ Jinja2 템플릿 상속:
     - HTMX: JavaScript 없이 AJAX 요청을 HTML 속성으로 처리
     - Alpine.js: 가벼운 반응형 JavaScript 프레임워크
 =============================================================================
--->
+#}
 
 <!--
 x-data: Alpine.js 컴포넌트 선언
@@ -33,7 +33,7 @@ x-data: Alpine.js 컴포넌트 선언
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ app_name }} - FastAPI + Jinja2 + HTMX 보일러플레이트">
 
-    <!--
+    {#
     Jinja2 템플릿 변수와 필터:
         {{ variable }}     - 변수 출력
         {{ var | filter }} - 필터 적용
@@ -42,7 +42,7 @@ x-data: Alpine.js 컴포넌트 선언
     {% block name %}...{% endblock %}:
         - 자식 템플릿에서 재정의할 수 있는 영역
         - 재정의하지 않으면 기본 내용 사용
-    -->
+    #}
     <title>{% block title %}{{ title | default(app_name) }}{% endblock %} | {{ app_name }}</title>
 
     <!--
@@ -136,6 +136,12 @@ x-data: Alpine.js 컴포넌트 선언
     ==========================================================================
     -->
     <script src="https://unpkg.com/htmx.org@2.0.0"></script>
+    <script>
+        // HTMX 설정: hx-boost 동작 최적화
+        htmx.config.defaultSwapStyle = 'innerHTML';
+        htmx.config.defaultSettleDelay = 20;
+        htmx.config.refreshOnHistoryMiss = true;
+    </script>
 
     <!--
     ==========================================================================
@@ -194,6 +200,7 @@ hx-boost="true":
     - SPA(Single Page Application)처럼 동작
 -->
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen"
+      x-data
       hx-boost="true">
 
     <!--
@@ -258,6 +265,7 @@ hx-boost="true":
          @keydown.escape.window="open = false">
         <!-- 모달 배경 오버레이 (클릭하면 모달 닫힘) -->
         <div x-show="open"
+             x-cloak
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
@@ -274,19 +282,21 @@ hx-boost="true":
         -->
         <div id="modal-content"
              x-show="open"
+             x-cloak
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 scale-95"
              x-transition:enter-end="opacity-100 scale-100"
              x-transition:leave="transition ease-in duration-150"
              x-transition:leave-start="opacity-100 scale-100"
              x-transition:leave-end="opacity-0 scale-95"
-             class="fixed inset-0 z-50 flex items-center justify-center p-4"
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+             :class="{ 'pointer-events-auto': open }"
              @click.self="open = false">
             <!-- 모달 내용이 HTMX로 여기에 로드됨 -->
         </div>
     </div>
 
-    <!--
+    {#
     ==========================================================================
     Navigation (네비게이션 바)
     ==========================================================================
@@ -295,19 +305,19 @@ hx-boost="true":
         - 현재 컨텍스트(변수)가 그대로 전달됨
         - 재사용 가능한 컴포넌트 분리에 유용
     ==========================================================================
-    -->
+    #}
     {% include "components/navbar.html" %}
 
     <!--
     ==========================================================================
     Main Content (메인 콘텐츠 영역)
     ==========================================================================
-    {% block main_class %}...{% endblock %}:
+    block main_class:
         - 기본 클래스를 블록으로 정의
         - 자식 템플릿에서 재정의 가능
         - 예: 대시보드는 사이드바가 있어서 다른 레이아웃 필요
 
-    {% block content %}{% endblock %}:
+    block content:
         - 각 페이지의 실제 내용이 들어갈 위치
         - 자식 템플릿에서 반드시 정의해야 함
     ==========================================================================
